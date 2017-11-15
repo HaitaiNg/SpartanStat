@@ -37,15 +37,12 @@ class PotentiostatLibrary
     int executeLinearSweep();
 
     // square wave functions
-    void squareWaveIncreasing( int delayTimeHigh, int delayTimeLow,
-      int startValue, int stopValue, int squareWaveAmplitude,
-      int squareWaveStep);
-    void squareWaveDecreasing( int delayTimeHigh, int delayTimeLow,
-      int startValue, int stopValue, int squareWaveAmplitude,
-      int squareWaveStep);
+    void squareWaveAlgorithm( double delayTimeHigh, double delayTimeLow,
+      double startValue, double stopValue, double squareWaveAmplitude,
+      double squareWaveStep);
     void executePulse();
 
-
+    int convertVoltageForDAC(int desiredVoltage);
     // Pin declarations
     int mDigitalPinZero = 24;
     int mDigitalPinOne = 25;
@@ -71,36 +68,8 @@ class PotentiostatLibrary
     double mStartVoltage = 0;
     double mStopVoltage = 0;
 
-    int mStartValue = (int)((mStartVoltage + 2500) * .819);
-    int mStopValue = (int)((mStopVoltage + 2500) * .819);
-
-    int mSquareWaveAmplitude = (int)(mSquareWaveAmplitudeVoltage * .819);  // Val between 0 and 4095
-    int mSquareWaveStep = (int)(mSquareWaveStepVoltage * .819);
-
-    int mSquareWaveFlag = 0 ;
-    int mNumberOfFields = 8;
-    int mFieldIndex = 0;
-    double mValues[8];
-
-
     double mLinearSweepRepititions = 0;
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

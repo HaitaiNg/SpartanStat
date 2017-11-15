@@ -43,7 +43,7 @@ void loop()
     }
     else if (userInput == "L") // If user enters linear: "L" execute linear wave
     {
-      Serial.println("Executing linear sweep");
+     Serial.println("Executing linear sweep");
       Serial.println("Enter number of repititions");
       while(Serial.available() == 0) {} // wait for user inpiut
       linearSweepCount = Serial.parseInt();
@@ -56,16 +56,18 @@ void loop()
     }
     else
     {
-      Serial.println("Error :: Invalid Input. Please try again"); 
+      Serial.println("Error :: Invalid Input. Please try again \n"); 
     }
   }
 }
 
+/*
 int executeLinearSweep()
 {
   potentiostat.executeLinearSweep();
   return 1;  
 }
+*/ 
 
 
 int executeSquareWave()
@@ -101,6 +103,7 @@ int executeSquareWave()
 
 void displaySquareWaveParametersToConsole()
 {
+ 
   Serial.println();
   Serial.print("Quiet Time (ms): ");
   Serial.println(quietTime);
@@ -117,7 +120,7 @@ void displaySquareWaveParametersToConsole()
   Serial.print("Start Voltage (mV): ");
   Serial.println(startVoltage);
   Serial.print("Stop Voltage (mV): ");
-  Serial.println(stopVoltage); 
+  Serial.println(stopVoltage);  
 }
 
 
