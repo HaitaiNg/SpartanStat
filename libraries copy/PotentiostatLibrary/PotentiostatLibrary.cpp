@@ -8,11 +8,24 @@ PotentiostatLibrary::PotentiostatLibrary()
 }
 
 
-void PotentiostatLibrary::init(double userMode, double delayTimeHigh,
+void PotentiostatLibrary::init( double delayTimeHigh,
   double delayTimeLow, double quietTime, double squareWaveAmpltudeVoltage,
   double squareWaveStepVoltage, double startVoltage, double stopVoltage)
 {
+  mDelayTimeHigh = delayTimeHigh;
+  mDelayTimeLow = delayTimeLow;
+  mQuietTime = quietTime;
+  mSquareWaveAmplitudeVoltage = squareWaveAmpltudeVoltage;
+  mSquareWaveStepVoltage = squareWaveStepVoltage;
+  mStartVoltage = startVoltage;
+  mStopVoltage = stopVoltage;
 
+  mStartValue = (int)((mStartVoltage + 2500) * .819);
+  mStopValue = (int)((mStopVoltage + 2500) * .819);
+  mSquareWaveAmplitude = (int)(mSquareWaveAmplitudeVoltage * .819);  // Val between 0 and 4095
+  mSquareWaveStep = (int)(mSquareWaveStepVoltage * .819);
+
+  executePulse();
 }
 
 
@@ -100,22 +113,37 @@ double PotentiostatLibrary::determineDigitalPinToSet(double currentStep, double 
   return currentStep / stepSize;
 }
 
-void PotentiostatLibrary::stepAlgorithm(double userInputStepSize)
+void PotentiostatLibrary::linearSweepAlgorithm(double userInputStepSize)
 {
   double startVoltage = 5.00;
   double sampleSize = 4096.00;
   double stepSize = startVoltage / sampleSize;
+
+  //Increasing (positive slope)
   for( double currentStep = 0; currentStep <= 5; currentStep += stepSize) // i == currentStep
   {
     int digitalEquivalentValue = determineDigitalPinToSet( currentStep, stepSize);
     outputDigitalValues( digitalEquivalentValue);
     Serial.println(digitalEquivalentValue);
   }
+  //Decreasing (negative slope)
+  for( double currentStepReverse = 5; currentStepReverse >= 0; currentStepReverse -= stepSize) // i == currentStep
+  {
+    int digitalEquivalentValue = determineDigitalPinToSet( currentStepReverse, stepSize);
+    outputDigitalValues( digitalEquivalentValue);
+    Serial.println(digitalEquivalentValue);
+  }
 }
 
-void PotentiostatLibrary::executeLinearSweep()
+
+int PotentiostatLibrary::executeLinearSweep()
 {
-  stepAlgorithm(100);
+  while(mLinearSweepRepititions > 0)
+  {
+    linearSweepAlgorithm(100);
+    mLinearSweepRepititions--;
+  }//stepAlgorithmReverse(100);
+  return 1; 
 }
 
 

@@ -20,7 +20,7 @@ class PotentiostatLibrary
 
     PotentiostatLibrary(); // Constructor
 
-    void init(double userMode, double delayTimeHigh, double delayTimeLow,
+    void init( double delayTimeHigh, double delayTimeLow,
       double quietTime, double squareWaveAmpltudeVoltage,
       double squareWaveStepVoltage, double startVoltage, double stopVoltage);
 
@@ -29,10 +29,12 @@ class PotentiostatLibrary
     void setWritePinToOutput();
 
     double determineDigitalPinToSet(double currentStep, double stepSize);
-    void stepAlgorithm(double userInputStepSize);
+    void linearSweepAlgorithm(double userInputStepSize);
+    void setLinearSweepRepititions(double repititions) {mLinearSweepRepititions = repititions;}
+    //void stepAlgorithmReverse(double userInputStepSize);
     void writeToDigitalPin( int digitalPin, int value);
     void outputDigitalValues( int digitalEquivalentValue);
-    void executeLinearSweep();
+    int executeLinearSweep();
 
     // square wave functions
     void squareWaveIncreasing( int delayTimeHigh, int delayTimeLow,
@@ -41,7 +43,7 @@ class PotentiostatLibrary
     void squareWaveDecreasing( int delayTimeHigh, int delayTimeLow,
       int startValue, int stopValue, int squareWaveAmplitude,
       int squareWaveStep);
-    void executePulse(); 
+    void executePulse();
 
 
     // Pin declarations
@@ -79,6 +81,9 @@ class PotentiostatLibrary
     int mNumberOfFields = 8;
     int mFieldIndex = 0;
     double mValues[8];
+
+
+    double mLinearSweepRepititions = 0;
 
 };
 
