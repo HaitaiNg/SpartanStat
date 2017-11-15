@@ -89,7 +89,7 @@ void PotentiostatLibrary::outputDigitalValues( int digitalEquivalentValue)
     a--;
     referenceIndex++;
     //copy over the 12 bits of interest into the smaller array
-    memcpy(splitArray, digitalOutputPinArray + 19, sizeof(splitArray));
+    memcpy(splitArray, digitalOutputPinArray + 20, sizeof(splitArray));
   }
 
   writeToDigitalPin(mDigitalPinEleven, splitArray[0]); // 2^11
@@ -254,6 +254,6 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
    }
    delay(1000);
    //1598 sets DAC to zer0
-   outputDigitalValues(2598);
+   outputDigitalValues(1598);
    delay(3000);
 }
