@@ -130,7 +130,8 @@ void PotentiostatLibrary::linearSweepAlgorithm(double userInputStepSize)
   {
     int digitalEquivalentValue = determineDigitalPinToSet( currentStep, stepSize);
     outputDigitalValues( digitalEquivalentValue);
-    Serial.println(digitalEquivalentValue);
+    Serial.print(digitalEquivalentValue);
+    readCurrent();
   }
   //Decreasing (negative slope)
 
@@ -138,7 +139,8 @@ void PotentiostatLibrary::linearSweepAlgorithm(double userInputStepSize)
   {
     int digitalEquivalentValue = determineDigitalPinToSet( currentStepReverse, stepSize);
     outputDigitalValues( digitalEquivalentValue);
-    Serial.println(digitalEquivalentValue);
+    Serial.print(digitalEquivalentValue);
+    readCurrent();
   }
 
   delay(1000);
@@ -241,6 +243,7 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
      Serial.print("     ");
      outputDigitalValues(val);
      delay(delayTimeHigh);
+     // read current Here
 
      // give low part of square wave
      val -= squareWaveAmplitude;
@@ -256,4 +259,21 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
    //1598 sets DAC to zer0
    outputDigitalValues(1598);
    delay(3000);
+}
+
+int PotentiostatLibrary::readCurrent()
+{
+
+  double ADCValue = analogRead(mAnalogPinOne);
+  double ADCValueConverted = ADCValue * mADCValueToVoltageRatio;
+  double current = 0.0372 * ADCValueConverted - 86.031;
+//  Serial.print("ADC Converted: ");
+  //Serial.print(ADCValueConverted);
+  //Serial.print("   analogReadValue: ");
+  //Serial.println(ADCValue);
+  Serial.print("  Current: ");
+  Serial.println(current);
+  //delay(1000);
+  return 1;
+
 }

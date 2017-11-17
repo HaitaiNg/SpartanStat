@@ -24,7 +24,7 @@ void loop()
   PotentiostatLibrary potentiostat = PotentiostatLibrary(); 
   
   Serial.println("---------- Program Executed ------------"); 
-  Serial.println("Please enter P for pulse or L for linear"); 
+  Serial.println("Please enter P for pulse // L for linear // C for current read"); 
   while(Serial.available() == 0){} 
 
   
@@ -53,6 +53,20 @@ void loop()
       Serial.print(operationCompleted);
       Serial.println(); 
       Serial.println(); 
+    }
+    else if (userInput == "C") 
+    {
+      int x = 1;
+  
+      Serial.println("Executing Read Current"); 
+          while(x > 0){
+      operationCompleted = potentiostat.readCurrent();
+          }
+      Serial.print("Completed Operation Return Value: "); 
+      Serial.print(operationCompleted);
+      Serial.println(); 
+      Serial.println(); 
+      
     }
     else
     {

@@ -45,17 +45,17 @@ class PotentiostatLibrary
     int convertVoltageForDAC(int desiredVoltage);
     // Pin declarations
     int mDigitalPinZero = 24;
-    int mDigitalPinOne = 25;
-    int mDigitalPinTwo = 26;
-    int mDigitalPinThree = 27;
-    int mDigitalPinFour = 28;
-    int mDigitalPinFive = 29;
-    int mDigitalPinSix = 30;
-    int mDigitalPinSeven = 31;
-    int mDigitalPinEight = 32;
-    int mDigitalPinNine = 33;
-    int mDigitalPinTen = 34;
-    int mDigitalPinEleven = 35;
+    int mDigitalPinOne = 26;
+    int mDigitalPinTwo = 28;
+    int mDigitalPinThree = 30;
+    int mDigitalPinFour = 32;
+    int mDigitalPinFive = 46;
+    int mDigitalPinSix = 44;
+    int mDigitalPinSeven = 42;
+    int mDigitalPinEight = 40;
+    int mDigitalPinNine = 38;
+    int mDigitalPinTen = 36;
+    int mDigitalPinEleven = 34;
     // Output pin to control writing to the DAC
     int mDigitalPinWR = 23;
 
@@ -70,6 +70,19 @@ class PotentiostatLibrary
 
     double mLinearSweepRepititions = 0;
 
+    // Uno
+    int mAnalogPinOne = A5;
+    int mAnalogPinTwo = A4;
+
+    // Mega
+    //int mAnalogPinOne = A15;
+    //int mAnalogPinTwo = A14;
+    double mADCValueToVoltageRatio = 4878.0 / 1024.0;
+
+    int readCurrent();
+
+
 };
+
 
 #endif
