@@ -1,5 +1,3 @@
-
-
 #ifndef PotentiostatLibrary_h // TL
 #define PotentiostatLibrary_h // TL
 
@@ -11,15 +9,11 @@
   #include "WConstants.h"
 #endif
 
-
-
-
 class PotentiostatLibrary
 {
   public:
 
     PotentiostatLibrary(); // Constructor
-
     void init( double delayTimeHigh, double delayTimeLow,
       double quietTime, double squareWaveAmpltudeVoltage,
       double squareWaveStepVoltage, double startVoltage, double stopVoltage);
@@ -27,15 +21,12 @@ class PotentiostatLibrary
     void setPinsToOutput();
     void setPinsToInput();
     void setWritePinToOutput();
-
     double determineDigitalPinToSet(double currentStep, double stepSize);
     void linearSweepAlgorithm(double userInputStepSize);
     void setLinearSweepRepititions(double repititions) {mLinearSweepRepititions = repititions;}
-    //void stepAlgorithmReverse(double userInputStepSize);
     void writeToDigitalPin( int digitalPin, int value);
     void outputDigitalValues( int digitalEquivalentValue);
     int executeLinearSweep();
-
     // square wave functions
     void squareWaveAlgorithm( double delayTimeHigh, double delayTimeLow,
       double startValue, double stopValue, double squareWaveAmplitude,
@@ -67,21 +58,21 @@ class PotentiostatLibrary
     double mSquareWaveStepVoltage = 0;
     double mStartVoltage = 0;
     double mStopVoltage = 0;
-
+    // Linear Sweep
     double mLinearSweepRepititions = 0;
 
     // Uno
-    int mAnalogPinOne = A5;
-    int mAnalogPinTwo = A4;
+    //int mAnalogPinOne = A5;
+    //int mAnalogPinTwo = A4;
 
     // Mega
-    //int mAnalogPinOne = A15;
-    //int mAnalogPinTwo = A14;
+    int mAnalogPinOne = A15;
+    int mAnalogPinTwo = A14;
     double mADCValueToVoltageRatio = 4878.0 / 1024.0;
-
     int readCurrent();
-
-
+    double mADCValue = 0;
+    double mCurrent = 0;
+    //Adafruit_ADS1115 ads; /* Use this for the 16-bit version */
 };
 
 

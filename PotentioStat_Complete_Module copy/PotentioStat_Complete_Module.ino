@@ -20,19 +20,17 @@ void setup()
 
 void loop() 
 {
-  
   PotentiostatLibrary potentiostat = PotentiostatLibrary(); 
   
   Serial.println("---------- Program Executed ------------"); 
   Serial.println("Please enter P for pulse // L for linear // C for current read"); 
   while(Serial.available() == 0){} 
 
-  
   if(Serial.available())
   {
     String userInput = Serial.readString(); // Serial read converts characters to ASCII equivalent
     int operationCompleted = 0; 
-
+    
     if(userInput == "P") // If user equals pulse: "P" execute pulse wave
     {
       operationCompleted = executeSquareWave(); 
@@ -57,7 +55,6 @@ void loop()
     else if (userInput == "C") 
     {
       int x = 1;
-  
       Serial.println("Executing Read Current"); 
           while(x > 0){
       operationCompleted = potentiostat.readCurrent();
@@ -74,15 +71,6 @@ void loop()
     }
   }
 }
-
-/*
-int executeLinearSweep()
-{
-  potentiostat.executeLinearSweep();
-  return 1;  
-}
-*/ 
-
 
 int executeSquareWave()
 { 
@@ -110,7 +98,8 @@ int executeSquareWave()
   stopVoltage = Serial.parseFloat();
   displaySquareWaveParametersToConsole(); 
 
-  potentiostat.init(delayTimeHigh, delayTimeLow, quietTime, squareWaveAmplitudeVoltage, squareWaveStepVoltage, startVoltage, stopVoltage);
+  potentiostat.init(delayTimeHigh, delayTimeLow, quietTime, squareWaveAmplitudeVoltage, 
+                      squareWaveStepVoltage, startVoltage, stopVoltage);
   Serial.println();
   return 1;  
 }

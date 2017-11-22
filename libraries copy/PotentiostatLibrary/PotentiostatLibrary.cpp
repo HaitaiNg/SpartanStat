@@ -23,14 +23,6 @@ void PotentiostatLibrary::init( double delayTimeHigh,
   mSquareWaveStepVoltage = 0.681 * squareWaveStepVoltage;
   mStartVoltage = convertVoltageForDAC(startVoltage);
   mStopVoltage = convertVoltageForDAC(stopVoltage);
-
-/*
-  mStartValue = (int)((mStartVoltage + 2500) * .819);
-  mStopValue = (int)((mStopVoltage + 2500) * .819);
-  mSquareWaveAmplitude = (int)(mSquareWaveAmplitudeVoltage * .819);  // Val between 0 and 4095
-  mSquareWaveStep = (int)(mSquareWaveStepVoltage * .819);
-*/
-
   executePulse();
 }
 
@@ -121,31 +113,61 @@ double PotentiostatLibrary::determineDigitalPinToSet(double currentStep, double 
 
 void PotentiostatLibrary::linearSweepAlgorithm(double userInputStepSize)
 {
+
   double startVoltage = 5.00;
   double sampleSize = 4096.00;
   double stepSize = startVoltage / sampleSize;
-
   //Increasing (positive slope)
   for( double currentStep = 0; currentStep <= 5; currentStep += stepSize) // i == currentStep
   {
     int digitalEquivalentValue = determineDigitalPinToSet( currentStep, stepSize);
     outputDigitalValues( digitalEquivalentValue);
     Serial.print(digitalEquivalentValue);
+    Serial.print("  ");
+    Serial.print(currentStep);
+    Serial.print("  ");
     readCurrent();
   }
   //Decreasing (negative slope)
-
   for( double currentStepReverse = 5; currentStepReverse >= 0; currentStepReverse -= stepSize) // i == currentStep
   {
     int digitalEquivalentValue = determineDigitalPinToSet( currentStepReverse, stepSize);
     outputDigitalValues( digitalEquivalentValue);
     Serial.print(digitalEquivalentValue);
+    Serial.print(currentStepReverse);
     readCurrent();
   }
 
   delay(1000);
   //1598 sets DAC to zer0
   outputDigitalValues(0);
+  
+
+  double delayTimeHigh = 0; double delayTimeLow = 0;
+  double startValue = convertVoltageForDAC(2000);
+  double stopValue = convertVoltageForDAC(-2000);
+  double squareWaveAmplitude = 1;
+  double squareWaveStep = 1;
+//  Adafruit_ADS1015 ads;
+  //ads.setGain(GAIN_TWOTHIRDS);
+
+  // Increasing slope
+  /*
+  for(int val = startValue ; val >= stopValue; val -= squareWaveStep)
+   {
+    Serial.print(val);
+    Serial.print("     ");
+    outputDigitalValues((int) val);
+  }
+
+  // Decreasing slope
+  for(int val = stopValue; val <= startValue; val += squareWaveStep)
+  {
+    Serial.print(val);
+    Serial.print("   ");
+    outputDigitalValues((int) val);
+  }
+  */
 }
 
 
@@ -165,13 +187,12 @@ int PotentiostatLibrary::executeLinearSweep()
 void PotentiostatLibrary::executePulse()
 {
   delay(mQuietTime);
-  int x = 3;
-  while(x > 0 )
+  while(true)
     {
     squareWaveAlgorithm( mDelayTimeHigh, mDelayTimeLow, mStartVoltage,
     mStopVoltage, mSquareWaveAmplitudeVoltage, mSquareWaveStepVoltage);
     delay(5000);
-    x--;
+    break;
     }
 
 }
@@ -184,21 +205,6 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
    * This function creates the increasing part of the square wave. Each iteration of the for loop generates a pulse with an amplitude specified by the user.
    * After each iteration, the step is incremented, and the next pulse will start at that step.
    */
-   Serial.println();
-   Serial.print("Delay time HIGH : ");
-   Serial.println(delayTimeHigh);
-   Serial.print("Delay time LOW : ");
-   Serial.println(delayTimeLow);
-   Serial.print("Start valaue : ");
-   Serial.println(startValue);
-   Serial.print("Stop value : ");
-   Serial.println(stopValue);
-   Serial.print("Square Wave Amplitude :");
-   Serial.println(squareWaveAmplitude);
-   Serial.print("Square wave step :");
-   Serial.println(squareWaveStep);
-
-
 
   for(int val = startValue ; val <= (stopValue - squareWaveAmplitude); val += squareWaveStep)
    {
@@ -208,6 +214,7 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
     Serial.print("     ");
     outputDigitalValues((int) val);
     delay(delayTimeLow);
+    readCurrent();
     // ** Here we collect sample current
     // give high part of square wave
     val += squareWaveAmplitude;
@@ -220,22 +227,6 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
     val -= squareWaveAmplitude;
    }
 
-   Serial.println();
-   Serial.print("Delay time HIGH : ");
-   Serial.println(delayTimeHigh);
-   Serial.print("Delay time LOW : ");
-   Serial.println(delayTimeLow);
-   Serial.print("Start valaue : ");
-   Serial.println(startValue);
-   Serial.print("Stop value : ");
-   Serial.println(stopValue);
-   Serial.print("Square Wave Amplitude :");
-   Serial.println(squareWaveAmplitude);
-   Serial.print("Square wave step :");
-   Serial.println(squareWaveStep);
-   Serial.println();
-
-
    for(int val = stopValue ; val >= (startValue + squareWaveAmplitude); val -= squareWaveStep) {
 
      // give high part of square wave
@@ -244,7 +235,7 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
      outputDigitalValues(val);
      delay(delayTimeHigh);
      // read current Here
-
+     readCurrent();
      // give low part of square wave
      val -= squareWaveAmplitude;
      Serial.print(val);
@@ -263,16 +254,10 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
 
 int PotentiostatLibrary::readCurrent()
 {
-
-  double ADCValue = analogRead(mAnalogPinOne);
-  double ADCValueConverted = ADCValue * mADCValueToVoltageRatio;
-  double current = 0.0372 * ADCValueConverted - 86.031;
-//  Serial.print("ADC Converted: ");
-  //Serial.print(ADCValueConverted);
-  //Serial.print("   analogReadValue: ");
-  //Serial.println(ADCValue);
+  mADCValue = analogRead(mAnalogPinOne) * mADCValueToVoltageRatio;
+  mCurrent = 0.0372 * mADCValue - 86.031;
   Serial.print("  Current: ");
-  Serial.println(current);
+  Serial.println( mCurrent);
   //delay(1000);
   return 1;
 
