@@ -35,7 +35,6 @@ void loop()
     {
       operationCompleted = executeSquareWave(); 
       Serial.print("Operation Completed");
-      Serial.print(operationCompleted);
       Serial.println(); 
     }
     else if (userInput == "L") // If user enters linear: "L" execute linear wave
@@ -47,7 +46,6 @@ void loop()
       potentiostat.setLinearSweepRepititions(linearSweepCount);
       operationCompleted = potentiostat.executeLinearSweep(); 
       Serial.print("Operation Completed ");
-      Serial.print(operationCompleted);
       Serial.println(); 
       Serial.println(); 
     }
@@ -57,10 +55,9 @@ void loop()
       Serial.println("Executing Read Current"); 
           while(x > 0)
           {
-            operationCompleted = potentiostat.readCurrent();
+            potentiostat.readCurrent();
           }
       Serial.print("Operation Completed "); 
-      Serial.print(operationCompleted);
       Serial.println(); 
       Serial.println(); 
     }

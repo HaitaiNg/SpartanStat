@@ -22,19 +22,24 @@ class PotentiostatLibrary
     void setPinsToInput();
     void setWritePinToOutput();
     double determineDigitalPinToSet(double currentStep);
-    void linearSweepAlgorithm(double userInputStepSize);
-    void setLinearSweepRepititions(double repititions) {mLinearSweepRepititions = repititions;}
     void writeToDigitalPin( int digitalPin, int value);
     void outputDigitalValues( int digitalEquivalentValue);
+    double convertValueToVoltage(double value);
+    int convertVoltageForDAC(int desiredVoltage);
+    int readCurrent();
+
+
+    // Linear sweep functions
+    void linearSweepAlgorithm(double userInputStepSize);
+    void setLinearSweepRepititions(double repititions) {mLinearSweepRepititions = repititions;}
     int executeLinearSweep();
-    // square wave functions
+
+    // Square wave functions
     void squareWaveAlgorithm( double delayTimeHigh, double delayTimeLow,
       double startValue, double stopValue, double squareWaveAmplitude,
       double squareWaveStep);
     void executePulse();
 
-    double convertValueToVoltage(double value);
-    int convertVoltageForDAC(int desiredVoltage);
     // Pin declarations
     int mDigitalPinZero = 24;
     int mDigitalPinOne = 26;
@@ -48,6 +53,7 @@ class PotentiostatLibrary
     int mDigitalPinNine = 38;
     int mDigitalPinTen = 36;
     int mDigitalPinEleven = 34;
+
     // Output pin to control writing to the DAC
     int mDigitalPinWR = 23;
 
@@ -65,6 +71,7 @@ class PotentiostatLibrary
     double mLinearSweepMinVoltage = -2.0;
     double mLinearSweepMaxVoltage = 2.0;
     double mLinearSweepStep = 0.001;
+
     // Uno
     //int mAnalogPinOne = A5;
     //int mAnalogPinTwo = A4;
@@ -73,7 +80,6 @@ class PotentiostatLibrary
     int mAnalogPinOne = A15;
     int mAnalogPinTwo = A14;
     double mADCValueToVoltageRatio = 4878.0 / 1024.0;
-    int readCurrent();
     double mADCValue = 0;
     double mCurrent = 0;
 
