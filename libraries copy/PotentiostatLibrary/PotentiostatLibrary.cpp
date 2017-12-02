@@ -8,8 +8,6 @@
  */
 PotentiostatLibrary::PotentiostatLibrary()
 {
-  //outputDigitalValues(convertVoltageForDAC(0)); // Whiel potentiostat is waiting for prompt
-      //set voltage at zero and hold until linear / pulse sweep parameters have been inputted
 }
 
 int PotentiostatLibrary::convertVoltageForDAC(int desiredVoltage)
@@ -126,104 +124,84 @@ double PotentiostatLibrary::determineDigitalPinToSet(double currentStep)
   return returnValue;
 }
 
-void PotentiostatLibrary::linearSweepAlgorithm(double startVoltage, double stopVoltage)
+void PotentiostatLibrary::linearSweepAlgorithm()
 {
-  /*
   double delayTimeHigh = 0; double delayTimeLow = 0;
-  double startValue = convertVoltageForDAC(startVoltage);
-  double stopValue = convertVoltageForDAC(stopVoltage);
+  double startValue = 0; double stopValue = 0;
   double squareWaveAmplitude = 1;
   double squareWaveStep = 1;
 
-  Serial.println("DONE");
-  Serial.println(startVoltage);
-  Serial.println(stopVoltage);
-  Serial.println(startValue);
-  Serial.println(stopValue);
-
-  // Increasing slope
-
-  for(int val = startValue ; val >= stopValue; val -= squareWaveStep)
-   {
-
-
-    Serial.print(determineDigitalPinToSet(val), 4);
-      Serial.print("     "); // this has to be 5 spaces
-    //Serial.print(val);
-      Serial.print("     ");
-    outputDigitalValues((int) val);
-    double current = readCurrent();
-    printCurrent(current);
-  }
-
-
-  // Decreasing slope
-  for(int val = stopValue; val <= startValue; val += squareWaveStep)
+  if(mLinearSweepType == 2)
   {
-    Serial.print(determineDigitalPinToSet(val), 4);
-       Serial.print("     ");
-    //Serial.print(val);
-      Serial.print("     ");
-    outputDigitalValues((int) val);
-    double current = readCurrent();
-    printCurrent(current);
-  }
+    startValue = convertVoltageForDAC(mStartVoltage);
+    stopValue = convertVoltageForDAC(mStopVoltage);
+    // Increasing slope
 
-  Serial.println("DONE");
-  Serial.println(startVoltage);
-  Serial.println(stopVoltage);
-  Serial.println(startValue);
-  Serial.println(stopValue); */
-
-  double delayTimeHigh = 0; double delayTimeLow = 0;
-  double startValue = convertVoltageForDAC(2000);
-     double stopValue = convertVoltageForDAC(-2000);
-     double squareWaveAmplitude = 1;
-     double squareWaveStep = 1;
-
-     // Increasing slope
-
-     for(int val = startValue ; val >= stopValue; val -= squareWaveStep)
-      {
-       Serial.print(determineDigitalPinToSet(val), 4);
-       Serial.print("     ");
-       //Serial.print(val);
-       Serial.print("     ");
-       outputDigitalValues((int) val);
-       mCurrent = readCurrent();
-       printCurrent(mCurrent);
-     }
-
-     // Decreasing slope
-     for(int val = stopValue; val <= startValue; val += squareWaveStep)
+    for(int val = startValue ; val >= stopValue; val -= squareWaveStep)
      {
-       Serial.print(determineDigitalPinToSet(val), 4);
-       Serial.print("     ");
-       //Serial.print(val);
-       Serial.print("     ");
-       outputDigitalValues((int) val);
-       mCurrent = readCurrent();
-       printCurrent(mCurrent);
-     }
+      //Serial.print(determineDigitalPinToSet(val), 4);
+      Serial.print(DACvalToVoltage(val), 4);
+        Serial.print("     "); // this has to be 5 spaces
+      Serial.print(val);
+        Serial.print("     ");
+      outputDigitalValues((int) val);
+      readCurrent();
+    }
+
+    // Decreasing slope
+    for(int val = stopValue; val <= startValue; val += squareWaveStep)
+    {
+      //Serial.print(determineDigitalPinToSet(val), 4);
+      Serial.print(DACvalToVoltage(val), 4);
+         Serial.print("     ");
+      Serial.print(val);
+        Serial.print("     ");
+      outputDigitalValues((int) val);
+      readCurrent();
+    }
+  }
+  else if (mLinearSweepType == 1)
+  {
+    startValue = convertVoltageForDAC(mStopVoltage);
+    stopValue = convertVoltageForDAC(mStartVoltage);
+
+    // Increasing slope
+    for(int val = stopValue; val <= startValue; val += squareWaveStep)
+    {
+      //Serial.print(determineDigitalPinToSet(val), 4);
+      Serial.print(DACvalToVoltage(val), 4);
+         Serial.print("     ");
+      Serial.print(val);
+        Serial.print("     ");
+      outputDigitalValues((int) val);
+      readCurrent();
+    }
+
+    for(int val = startValue ; val >= stopValue; val -= squareWaveStep)
+     {
+      //Serial.print(determineDigitalPinToSet(val), 4);
+      Serial.print(DACvalToVoltage(val), 4);
+        Serial.print("     "); // this has to be 5 spaces
+      Serial.print(val);
+        Serial.print("     ");
+      outputDigitalValues((int) val);
+      readCurrent();
+    }
+   }
+   else
+   {
+     Serial.println("Error :: Invalid input. Please try again \n");
+   }
 
 
-
-}
-
-void PotentiostatLibrary::setLinearSweepParameters(double startVoltage, double stopVoltage)
-{
-  mStartVoltage = startVoltage;
-  mStopVoltage = stopVoltage;
 }
 
 
 int PotentiostatLibrary::executeLinearSweep()
 {
-  outputDigitalValues(convertVoltageForDAC(mStartVoltage)); // s
-  delay(mQuietTime);
   while(mLinearSweepRepititions > 0)
   {
-    linearSweepAlgorithm(mStartVoltage, mStopVoltage);
+    linearSweepAlgorithm();
     mLinearSweepRepititions--;
   }
   return 1;
@@ -234,7 +212,6 @@ int PotentiostatLibrary::executeLinearSweep()
 
 void PotentiostatLibrary::executePulse()
 {
-  outputDigitalValues(convertVoltageForDAC(mStartVoltage)); // set the start voltage and delay for some time
   delay(mQuietTime);
   while(true)
     {
@@ -246,14 +223,6 @@ void PotentiostatLibrary::executePulse()
 
 }
 
-double convertValueToVoltage(double value)
-{
-  return value / 4096 * 5;
-}
-
-
-
-
 void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delayTimeLow,
   double startValue, double stopValue, double squareWaveAmplitude, double squareWaveStep)
 {
@@ -264,31 +233,46 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
 
   for(int val = startValue ; val <= (stopValue - squareWaveAmplitude); val += squareWaveStep)
    {
+
+    /*
+    Serial.print(DACvalToVoltage(val));
+    Serial.print("     ");
+    Serial.print("     ");
+    */
+
     // give low part of square wave
-    Serial.print(val);
-    Serial.print("     ");
-    Serial.print("     ");
     outputDigitalValues((int) val);
     delay(delayTimeLow);
+
     // ** Here we collect sample current
-    double currentLow = readCurrent();
+    double current_high = readCurrentForSquareWave();
+
     // give high part of square wave
     val += squareWaveAmplitude;
 
-    Serial.print(val);
+    /*
+    Serial.print(DACvalToVoltage(val));
     Serial.print("     ");
     Serial.print("     ");
+    */
+
     outputDigitalValues((int) val);
     delay(delayTimeHigh);
+
     //  ** Here we collect sample current
-     double currentHigh = readCurrent();
+    double current_low = readCurrentForSquareWave();
 
     // Reset squarewave back to low, let the loop increment
     val -= squareWaveAmplitude;
-    mCurrent = currentHigh - currentLow;
-    printCurrent(mCurrent);
+
+    // Print difference of two currents and the starting Voltage
+    Serial.print(DACvalToVoltage(val));
+    Serial.print("          ");
+    double differenceCurrent = current_high - current_low;
+    printCurrentForSquareWave(differenceCurrent);
    }
 
+   // Next section commented out as sweep only needs to go in one direction
    /*
    for(int val = stopValue ; val >= (startValue + squareWaveAmplitude); val -= squareWaveStep) {
 
@@ -298,32 +282,57 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
      outputDigitalValues(val);
      delay(delayTimeHigh);
      // read current Here
-     double currentHigh = readCurrent();
+     readCurrent();
      // give low part of square wave
      val -= squareWaveAmplitude;
+
      Serial.print(val);
      Serial.print("     ");
      outputDigitalValues(val);
      delay(delayTimeLow);
-     double currentLow = readCurrent();
+     readCurrent();
      // Reset back to high, let the loop decrement
      val += squareWaveAmplitude;
-     mCurrent = currentHigh - currentLow;
-     printCurrent();
    }
    */
 }
 
-double PotentiostatLibrary::readCurrent()
+int PotentiostatLibrary::readCurrent()
 {
   mADCValue = analogRead(mAnalogPinOne) * mADCValueToVoltageRatio;
   mCurrent = 0.0372 * mADCValue - 86.031;
-  return mCurrent;
+  Serial.print( mCurrent);
+  Serial.println("  ");
+  return 1;
 
 }
 
-void PotentiostatLibrary::printCurrent(double current)
+/*
+This function reads the raw ADC value from the Arduino pin, and converts
+it into a current using a calibration equation.
+*/
+double PotentiostatLibrary::readCurrentForSquareWave()
 {
-  Serial.print( current, 3);
-  Serial.println("     ");
+  double ADCValue = analogRead(mAnalogPinOne) * mADCValueToVoltageRatio;
+  double current = .0372 * ADCValue - 86.031;
+  return current;
+}
+
+/*
+This function prints the current in the correct format
+*/
+void PotentiostatLibrary::printCurrentForSquareWave(double current)
+{
+    Serial.print(current);
+    Serial.println("  ");
+}
+
+/*
+Takes a DAC value as input, and returns the corresponding voltage that should
+appear at the output of the circuit
+*/
+double PotentiostatLibrary::DACvalToVoltage(int DACval)
+{
+  double convertedVoltage = (DACval * 1.468) - 2346;
+  return -convertedVoltage;
 }

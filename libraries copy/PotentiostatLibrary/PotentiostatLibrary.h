@@ -26,13 +26,15 @@ class PotentiostatLibrary
     void outputDigitalValues( int digitalEquivalentValue);
     double convertValueToVoltage(double value);
     int convertVoltageForDAC(int desiredVoltage);
-    double readCurrent();
-    void printCurrent(double current);
+    int readCurrent();
+    double DACvalToVoltage(int DACval);
+
 
     // Linear sweep functions
-    void linearSweepAlgorithm(double startVoltage, double stopVoltage);
+    void linearSweepAlgorithm();
+    void setLinearParameters(double startVoltage, double stopVoltage) {mStartVoltage = startVoltage; mStopVoltage = stopVoltage;}
+    void setLinearSlope(int slope) {mLinearSweepType = slope;}
     void setLinearSweepRepititions(double repititions) {mLinearSweepRepititions = repititions;}
-    void setLinearSweepParameters(double startVoltage, double stopVoltage);
     int executeLinearSweep();
 
     // Square wave functions
@@ -40,6 +42,8 @@ class PotentiostatLibrary
       double startValue, double stopValue, double squareWaveAmplitude,
       double squareWaveStep);
     void executePulse();
+    double readCurrentForSquareWave();
+    void printCurrentForSquareWave(double current);
 
     // Pin declarations
     int mDigitalPinZero = 24;
@@ -72,6 +76,7 @@ class PotentiostatLibrary
     double mLinearSweepMinVoltage = -2.0;
     double mLinearSweepMaxVoltage = 2.0;
     double mLinearSweepStep = 0.001;
+    int mLinearSweepType = 0;
 
     // Uno
     //int mAnalogPinOne = A5;
@@ -83,5 +88,9 @@ class PotentiostatLibrary
     double mADCValueToVoltageRatio = 4878.0 / 1024.0;
     double mADCValue = 0;
     double mCurrent = 0;
+
+
 };
+
+
 #endif
