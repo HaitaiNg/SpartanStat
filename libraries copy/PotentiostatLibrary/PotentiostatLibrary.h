@@ -3,6 +3,8 @@
 
 #if (ARDUINO >= 100)
   #include "Arduino.h"
+  #include "Adafruit_ADS1015.h"
+  #include "Wire.h"
 #else
   #include "WProgram.h"
   #include "pins_arduino.h"

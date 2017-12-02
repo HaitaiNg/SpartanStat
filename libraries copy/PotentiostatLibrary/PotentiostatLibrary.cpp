@@ -2,12 +2,15 @@
 #include "PotentiostatLibrary.h"
 #include "Arduino.h"
 
+Adafruit_ADS1115 ads;
 /*
  * Name: PotententioStatLibrary
  * Description: Constructor
  */
 PotentiostatLibrary::PotentiostatLibrary()
 {
+  ads.setGain(GAIN_TWOTHIRDS);
+  ads.begin();
 }
 
 int PotentiostatLibrary::convertVoltageForDAC(int desiredVoltage)
@@ -193,8 +196,6 @@ void PotentiostatLibrary::linearSweepAlgorithm()
    {
      Serial.println("Error :: Invalid input. Please try again \n");
    }
-
-
 }
 
 
@@ -267,7 +268,7 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
     val -= squareWaveAmplitude;
 
     // Print difference of two currents and the starting Voltage
-    Serial.print(DACvalToVoltage(val));
+    Serial.print(-DACvalToVoltage(val));
     Serial.print("          ");
     double differenceCurrent = current_high - current_low;
     printCurrentForSquareWave(differenceCurrent);
@@ -300,11 +301,17 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
 
 int PotentiostatLibrary::readCurrent()
 {
-  mADCValue = analogRead(mAnalogPinOne) * mADCValueToVoltageRatio;
-  mCurrent = 0.0372 * mADCValue - 86.031;
-  Serial.print( mCurrent);
+  //mADCValue = analogRead(mAnalogPinOne) * mADCValueToVoltageRatio;
+  //mCurrent = 0.0372 * mADCValue - 86.031;
+  //Serial.print( mCurrent);
+  //Serial.println("  ");
+  //return 1;
+
+  int16_t adc1;
+  adc1 = ads.readADC_SingleEnded(1); //* 0.1875;
+  Serial.print(adc1);
   Serial.println("  ");
-  return 1;
+  return adc1;
 
 }
 
@@ -314,6 +321,10 @@ it into a current using a calibration equation.
 */
 double PotentiostatLibrary::readCurrentForSquareWave()
 {
+  //int16_t adc1;
+  //adc1 = ads.readADC_SingleEnded(1);
+  //return adc1;
+
   double ADCValue = analogRead(mAnalogPinOne) * mADCValueToVoltageRatio;
   double current = .0372 * ADCValue - 86.031;
   return current;

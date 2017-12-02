@@ -47,7 +47,6 @@ void loop()
      while(Serial.available() == 0) {} // wait for user inpiut
      linearSweepCount = Serial.parseInt();
      potentiostat.setLinearSweepRepititions(linearSweepCount);
-    
 
      Serial.println("Enter Start Voltage (mV):"); 
      while(Serial.available() == 0) {}
@@ -64,7 +63,6 @@ void loop()
      potentiostat.setLinearSlope(linearSweepAlgorithmSlope); 
      displayLinearSweepParametersToConsole(); 
 
-      
      potentiostat.executeLinearSweep();
      Serial.print("Completed Operation Return Value: ");
      Serial.println(); Serial.println(); 
