@@ -131,6 +131,7 @@ void PotentiostatLibrary::linearSweepAlgorithm()
   double squareWaveAmplitude = 1;
   double squareWaveStep = 1;
 
+
   if(mLinearSweepType == 2)
   {
     startValue = convertVoltageForDAC(mStartVoltage);
@@ -142,7 +143,7 @@ void PotentiostatLibrary::linearSweepAlgorithm()
       //Serial.print(determineDigitalPinToSet(val), 4);
       Serial.print(DACvalToVoltage(val), 4);
         Serial.print("     "); // this has to be 5 spaces
-      Serial.print(val);
+      //Serial.print(val);
         Serial.print("     ");
       outputDigitalValues((int) val);
       readCurrent();
@@ -154,7 +155,7 @@ void PotentiostatLibrary::linearSweepAlgorithm()
       //Serial.print(determineDigitalPinToSet(val), 4);
       Serial.print(DACvalToVoltage(val), 4);
          Serial.print("     ");
-      Serial.print(val);
+      //Serial.print(val);
         Serial.print("     ");
       outputDigitalValues((int) val);
       readCurrent();
@@ -171,7 +172,7 @@ void PotentiostatLibrary::linearSweepAlgorithm()
       //Serial.print(determineDigitalPinToSet(val), 4);
       Serial.print(DACvalToVoltage(val), 4);
          Serial.print("     ");
-      Serial.print(val);
+    //  Serial.print(val);
         Serial.print("     ");
       outputDigitalValues((int) val);
       readCurrent();
@@ -182,7 +183,7 @@ void PotentiostatLibrary::linearSweepAlgorithm()
       //Serial.print(determineDigitalPinToSet(val), 4);
       Serial.print(DACvalToVoltage(val), 4);
         Serial.print("     "); // this has to be 5 spaces
-      Serial.print(val);
+    //  Serial.print(val);
         Serial.print("     ");
       outputDigitalValues((int) val);
       readCurrent();

@@ -49,19 +49,21 @@ void loop()
      potentiostat.setLinearSweepRepititions(linearSweepCount);
     
 
-     Serial.println("Enter Start Voltage (mV)"); 
+     Serial.println("Enter Start Voltage (mV):"); 
      while(Serial.available() == 0) {}
      startVoltage = Serial.parseFloat(); 
-     Serial.println("Enter Stop Voltage (mV)"); 
+     Serial.println("Enter Stop Voltage (mV):"); 
      while(Serial.available() == 0) {}
      stopVoltage = Serial.parseFloat(); 
-     potentiostat.setLinearParameters(startVoltage, stopVoltage);   
+     potentiostat.setLinearParameters(-startVoltage, -stopVoltage);   
      Serial.println("Please indicate whether linear sweep slope is increasing to decreasing");
-     Serial.println("-- Options: increasing to decreasing = 1 // decreasing to increasing : 2 -- "); 
+     Serial.println("-- Options: decreasing to increasing 1 // increasing to decreasing : 2 -- "); 
      Serial.println("Enter slope (1 or 2): "); 
      while(Serial.available() == 0) {} 
      linearSweepAlgorithmSlope = Serial.parseInt(); 
      potentiostat.setLinearSlope(linearSweepAlgorithmSlope); 
+     displayLinearSweepParametersToConsole(); 
+
       
      potentiostat.executeLinearSweep();
      Serial.print("Completed Operation Return Value: ");
@@ -87,15 +89,6 @@ void loop()
     }
   }
 }
-
-/*
-int executeLinearSweep()
-{
-  potentiostat.executeLinearSweep();
-  return 1;
-}
-*/
-
 
 int executeSquareWave()
 {
@@ -144,8 +137,20 @@ void displaySquareWaveParametersToConsole()
   Serial.println(squareWaveStepVoltage);
   Serial.print("Start Voltage (mV): ");
   Serial.println(startVoltage);
-  Serial.print("Start Voltage (mV): ");
-  Serial.println(startVoltage);
   Serial.print("Stop Voltage (mV): ");
   Serial.println(stopVoltage);
 }
+
+void displayLinearSweepParametersToConsole()
+{
+  Serial.println();
+  Serial.print("Number of repititions: "); 
+  Serial.println(linearSweepCount); 
+  Serial.print("Stop Voltage (mV): ");
+  Serial.println(startVoltage);
+  Serial.print("Start Voltage (mV): ");
+  Serial.println(stopVoltage); 
+  Serial.println(); 
+}
+
+
