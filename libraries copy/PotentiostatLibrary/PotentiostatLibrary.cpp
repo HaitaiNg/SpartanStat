@@ -1,22 +1,49 @@
+/**
+ * \file PotentiostatLibrary.cpp
+ *
+ * \author Haitai Ng & Justin Opperman
+ *
+ * This file contains all the function definitions and source code
+ * required to execute the portable potentiostat created by MSU
+ * ECE 480 Team 11 Fall 2017.
+ *
+ * This file is to be used with PotentiostatLibrary.h
+ */
+
 
 #include "PotentiostatLibrary.h"
 #include "Arduino.h"
 
 Adafruit_ADS1115 ads;
+
 /*
  * Name: PotententioStatLibrary
- * Description: Constructor
+ * Description: Constructor. Initiate and create a Potentiostat object
  */
 PotentiostatLibrary::PotentiostatLibrary()
 {
+  /// Set the gain and configuration for the external ADC
   ads.setGain(GAIN_TWOTHIRDS);
   ads.begin();
 }
 
+/*
+ * Name: convertVoltageForDAC
+ * Description: Calbirate the desired voltage so it can be received by DAC
+ */
 int PotentiostatLibrary::convertVoltageForDAC(int desiredVoltage)
 {
   return (desiredVoltage + 2346) * 0.681;
 }
+
+/*
+*  Name: init
+*  Description: initialize and set private member variables associated with
+*   the square wave
+*
+* \param Square Wave input parameters
+* \return None
+*/
 
 void PotentiostatLibrary::init( double delayTimeHigh,
   double delayTimeLow, double quietTime, double squareWaveAmpltudeVoltage,
@@ -32,7 +59,13 @@ void PotentiostatLibrary::init( double delayTimeHigh,
   executePulse();
 }
 
-// Configure pins to output mode
+/*
+*  Name: setPinToOutput
+*  Descripton: set the GPIO pins to output mode
+* \param None
+* \return None
+*/
+
 void PotentiostatLibrary::setPinsToOutput()
 {
   pinMode(mDigitalPinEleven, OUTPUT);
@@ -49,13 +82,25 @@ void PotentiostatLibrary::setPinsToOutput()
   pinMode(mDigitalPinZero, OUTPUT);
 }
 
-// Set write pin to output
+/*
+*  Name: setWritePinToOutput
+*  Description: set the write pin to output mode
+* \param None
+* \return None
+*/
 void PotentiostatLibrary::setWritePinToOutput()
 {
   pinMode(mDigitalPinWR, OUTPUT);
 }
 
-
+/*
+*  Name: WriteToDigitalPins
+*  Description: Set the value to the GPIO pin.
+*   Logic high = a voltage > 0
+    Logic low = a voltage < 0
+* \param integer GPIO pin , integer Logic high (1) or Logic low (0)
+* \return None
+*/
 void PotentiostatLibrary::writeToDigitalPin( int digitalPin, int value)
 {
   if(value == 1)
@@ -71,6 +116,19 @@ void PotentiostatLibrary::writeToDigitalPin( int digitalPin, int value)
   }
 }
 
+/*
+*  Name: OutputDigitalPins
+*  Description: Convert an integer value into a 12 bit binary equivalent
+*  Creates an array data structure (size 12) and converts a 32 bit integer value
+*  into a (12 bit) binary equivalent
+*  This is completed by extensive bit shifting.
+*  Each bit of the 12 bit array will then be outputted to the DAC by writing
+*  Initialize and write once the digital write pin has been set
+*
+*
+* \param integer DigitalEquivalentValue
+* \return None
+*/
 
 void PotentiostatLibrary::outputDigitalValues( int digitalEquivalentValue)
 {
@@ -89,6 +147,7 @@ void PotentiostatLibrary::outputDigitalValues( int digitalEquivalentValue)
     memcpy(splitArray, digitalOutputPinArray + 20, sizeof(splitArray));
   }
 
+  /// set the GPIO pins to output its associated value
   writeToDigitalPin(mDigitalPinEleven, splitArray[0]); // 2^11
   writeToDigitalPin(mDigitalPinTen, splitArray[1]); // 2^10
   writeToDigitalPin(mDigitalPinNine, splitArray[2]); // 2^9
@@ -103,30 +162,19 @@ void PotentiostatLibrary::outputDigitalValues( int digitalEquivalentValue)
   writeToDigitalPin(mDigitalPinZero, splitArray[11]); // 2^0
 
   delay(1);
-  digitalWrite(mDigitalPinWR, LOW); //activating on active low
-  delay(1);
-  digitalWrite(mDigitalPinWR, HIGH);
+  digitalWrite(mDigitalPinWR, LOW); //< Disable all writing to DAC
+  delay(1); //< wait until all GPIO pins have all their values set
+  digitalWrite(mDigitalPinWR, HIGH); //< write to DAC
   delay(1);
 
 }
 
-double PotentiostatLibrary::determineDigitalPinToSet(double currentStep)
-{
-  double returnValue = 0.00;
-  if(mLinearSweepMinVoltage < 2.0)
-  {
-    mLinearSweepMinVoltage += mLinearSweepStep;
-    returnValue = mLinearSweepMinVoltage;
-  }
-  else
-  {
-    mLinearSweepMaxVoltage -= mLinearSweepStep;
-    returnValue = mLinearSweepMaxVoltage;
-  }
-
-  return returnValue;
-}
-
+/*
+*  Name: linearSweepAlgorithm
+*  Description: This program executes the linear sweep 
+* \param integer DigitalEquivalentValue
+* \return None
+*/
 void PotentiostatLibrary::linearSweepAlgorithm()
 {
   double delayTimeHigh = 0; double delayTimeLow = 0;
@@ -150,6 +198,7 @@ void PotentiostatLibrary::linearSweepAlgorithm()
         Serial.print("     ");
       outputDigitalValues((int) val);
       readCurrent();
+    //  delay(100);
     }
 
     // Decreasing slope
@@ -162,6 +211,7 @@ void PotentiostatLibrary::linearSweepAlgorithm()
         Serial.print("     ");
       outputDigitalValues((int) val);
       readCurrent();
+    //  delay(100);
     }
   }
   else if (mLinearSweepType == 1)
@@ -172,13 +222,13 @@ void PotentiostatLibrary::linearSweepAlgorithm()
     // Increasing slope
     for(int val = stopValue; val <= startValue; val += squareWaveStep)
     {
-      //Serial.print(determineDigitalPinToSet(val), 4);
       Serial.print(DACvalToVoltage(val), 4);
          Serial.print("     ");
     //  Serial.print(val);
         Serial.print("     ");
       outputDigitalValues((int) val);
       readCurrent();
+      delay(100);
     }
 
     for(int val = startValue ; val >= stopValue; val -= squareWaveStep)
@@ -190,6 +240,7 @@ void PotentiostatLibrary::linearSweepAlgorithm()
         Serial.print("     ");
       outputDigitalValues((int) val);
       readCurrent();
+      delay(100);
     }
    }
    else
@@ -268,7 +319,7 @@ void PotentiostatLibrary::squareWaveAlgorithm(double delayTimeHigh, double delay
     val -= squareWaveAmplitude;
 
     // Print difference of two currents and the starting Voltage
-    Serial.print(-DACvalToVoltage(val));
+    Serial.print(DACvalToVoltage(val));
     Serial.print("          ");
     double differenceCurrent = current_high - current_low;
     printCurrentForSquareWave(differenceCurrent);
