@@ -5,4 +5,4 @@ Potentiostats are electrochemical measurement tools that can be used to measure 
 
 This work would not have been possible without the support of the Michigan State University College of Electrical and Computer Engineering, and Fraunhofer USA. The design team would like to express their gratitude to our sponsor, Dr. Rusinek, and our facilitator, Dr. Fan, for their patience, guidance, and valuable and constructive critiques of this project. The design team would also like to thank Dr. Albrecht and Dr. Udpa for their professional advice   and   for   keeping   our   progress   on   schedule.
 
-![alert text](https://www.prnewswire.com/news-releases/delaware-chancery-court-confirms-fraunhofer-usa-rights-300310300.html)
+![alt text](https://www.prnewswire.com/news-releases/delaware-chancery-court-confirms-fraunhofer-usa-rights-300310300.html)
