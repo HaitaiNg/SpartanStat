@@ -1,0 +1,4 @@
+# ECE480
+SpartanStat
+
+Potentiostats are electrochemical measurement tools that can be used to measure and detect the levels of heavy metals in solutions. Present day potentiostats are large, heavy, and expensive, often costing thousands of dollars. The goal of this project was to create a cheap, portable, and accurate potentiostat that could be used to collect data in the field, or be used as part of a larger unit to analyze blood samples. The potentiostat was able to generate square wave and linear sweep voltammetry, measure currents in the single digit microamp range, and graphically represent the collected data. Validation and performance evaluations were conducted by comparing data from industry standard potentiostat devices   to   data   generated   by   the   developed   portable   potentiostat.
