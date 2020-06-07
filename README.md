@@ -5,12 +5,14 @@ Potentiostats are electrochemical measurement tools that can be used to measure 
 
 This work would not have been possible without the support of the Michigan State University College of Electrical and Computer Engineering, and Fraunhofer USA. The design team would like to express their gratitude to our sponsor, Dr. Rusinek, and our facilitator, Dr. Fan, for their patience, guidance, and valuable and constructive critiques of this project. The design team would also like to thank Dr. Albrecht and Dr. Udpa for their professional advice   and   for   keeping   our   progress   on   schedule.
 
+Awards: http://designday.msu.edu/fall2017/electrical-engineering/spring-2017-awards/
+
 Design Day Setup 
-<img src="images/display.jng"> 
+<img src="images/display.png"> 
 
 
 Poster
-<img src="images/poster.jng"> 
+<img src="images/poster.png"> 
 
 
 
