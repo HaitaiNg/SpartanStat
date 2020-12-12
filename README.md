@@ -7,11 +7,11 @@ This work would not have been possible without the support of the Michigan State
 
 Awards: http://designday.msu.edu/fall2017/electrical-engineering/spring-2017-awards/
 
-Design Day Setup 
+##### Design Day Setup 
 <img src="images/display.png"> 
 
 
-Poster
+###### Poster
 <img src="images/poster.png"> 
 
 

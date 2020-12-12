@@ -1,5 +1,4 @@
 #include "PotentiostatLibrary.h" 
-
 float delayTimeHigh;
 float delayTimeLow;
 float quietTime;
