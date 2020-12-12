@@ -1,4 +1,7 @@
 # ECE480 - Senior Design
+###### Refresh Date: 12.06.17
+###### Author: Nathan Bagnall, Brandon Gevaert, Haitai Ng, Justin Opperman, Xingchen Xiao, Yuzhou Wu 
+
 SpartanStat
 
 Potentiostats are electrochemical measurement tools that can be used to measure and detect the levels of heavy metals in solutions. Present day potentiostats are large, heavy, and expensive, often costing thousands of dollars. The goal of this project was to create a cheap, portable, and accurate potentiostat that could be used to collect data in the field, or be used as part of a larger unit to analyze blood samples. The potentiostat was able to generate square wave and linear sweep voltammetry, measure currents in the single digit microamp range, and graphically represent the collected data. Validation and performance evaluations were conducted by comparing data from industry standard potentiostat devices   to   data   generated   by   the   developed   portable   potentiostat.
@@ -14,6 +17,3 @@ http://designday.msu.edu/fall2017/electrical-engineering/spring-2017-awards/
 
 ##### Poster
 <img src="images/poster.png"> 
-
-
-
